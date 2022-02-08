@@ -2,20 +2,15 @@ const express = require("express");
 const app = express();
 const server = require("http").Server(app)
 
+const config = require("./config")
+
 const cors = require("cors")
 const bodyParser = require("body-parser")
 const socket = require("./socket")
 const db = require("./db")
 const router = require("./network/routes")
 
-
-const dbConfig = {
-    url: 'mongodb://localhost:27017/chatdb',
-    user: 'aamv',
-    password: 'aamv'
-}
-
-db(dbConfig);
+db(config.dbConfig);
 
 app.use(cors())
 app.use(bodyParser.json())
@@ -25,8 +20,8 @@ socket.connect(server);
 
 router(app)
 
-app.use("/app", express.static("public"))
+app.use(config.publicRoute, express.static("public"))
 
-server.listen(3000, function (){
-    console.log("App listen on http://localhost:3000");
+server.listen(config.port, function (){
+    console.log("App listen on " + config.host + ":" + config.port);
 });
